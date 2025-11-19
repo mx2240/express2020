@@ -69,7 +69,9 @@ app.use("/api/admin/profile", adminProfileRoutes);
 app.use("/api/admin/students", adminStudentRoutes);
 
 // Auth routes (login/register)
-app.use("/api/auth", authRoutes);
+// app.use("/api/auth", authRoutes);
+app.use("/api/auth", require("./routes/authRoutes"));
+
 
 // ===========================
 // Root
