@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - SportsZone</title>
+  <link rel="stylesheet" href="/stylesheets/sports-contact.css" />
+</head>
+ <body>
+   <!-- create nice sports contact page -->
+  <header>
+    <div class="container">
+      <h1>SportsZone</h1>
+      <nav>
+    
+          <a href="/">Home</a>
+        <a href="/news">News</a>
+        <a href="/scores">Scores</a>
+        <a href="/teams">Teams</a>
+     <a href="/contact" class="active">Contact</a>
+      
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="contact-hero">
+      <div class="container">
+        <h2>Contact Us</h2>
+        <p>Have a question, suggestion, or just want to say hello? We’d love to hear from you!</p>
+      </div>
+    </section>
+    <section class="contact-section container">
+      <div class="contact-info">
+        <h3>Get in Touch</h3>
+        <ul>
+          <li><strong>Email:</strong> support@sportszone.com</li>
+          <li><strong>Phone:</strong> +1-234-567-8901</li>
+          <li><strong>Address:</strong> 123 Sports Avenue, Cityville, Country</li>
+        </ul>
+        <div class="social">
+          <a href="#" title="Follow us on Twitter"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="Twitter" /></a>
+          <a href="#" title="Follow us on Facebook"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" /></a>
+          <a href="#" title="Follow us on Instagram"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" /></a>
+        </div>
+      </div>
+      <form class="contact-form">
+        <h3>Send a Message</h3>
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required>
+        
+        <label for="email">Your Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" placeholder="Subject" required>
+        
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Type your message..." required></textarea>
+        
+        <button type="submit">Send Message</button>
+      </form>
+
+
+
+    </section>
+  </main>
+
+ <h1>Upload an Image</h1>
+ <img src="/uploads/1757846791024.png" alt="">
+  <form action="/upload" method="POST" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" required>
+    <br><br>
+    <button type="submit">Upload</button>
+  </form>
+
+  
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 SportsZone. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

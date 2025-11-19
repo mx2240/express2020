@@ -1,25 +1,42 @@
 {
-  "name": "express",
-  "version": "0.0.0",
-  "private": true,
+  "name": "express-app",
+  "version": "1.0.0",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node api/index.js",
+    "abass": "nodemon api/index.js",
+    "dev": "vercel dev"
   },
   "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "cookie-parser": "~1.4.4",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "csv-parse": "^6.1.0",
-    "debug": "~2.6.9",
-    "dotenv": "^17.2.3",
-    "express": "~4.16.1",
-    "express-validator": "^7.3.0",
-    "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
+    "dotenv": "^17.2.0",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.19.3",
-    "morgan": "~1.9.1",
+    "method-override": "^3.0.0",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.16.4",
+    "morgan": "^1.10.1",
     "multer": "^2.0.2",
-    "sqlite3": "^5.1.7"
+    "path": "^0.12.7",
+    "serverless-http": "^3.0.0",
+    "vercel": "^44.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MRBASSX/express-vercel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MRBASSX/express-vercel/issues"
+  },
+  "homepage": "https://github.com/MRBASSX/express-vercel#readme",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

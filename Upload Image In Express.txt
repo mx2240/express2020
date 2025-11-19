@@ -1,0 +1,110 @@
+1. npm install express multer
+
+2. const multer = require('multer');
+
+3. 
+
+In Controller
+
+// Set up storage for multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Uploads directory
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  }
+});
+
+// File filter (optional, e.g., only images)
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /jpeg|jpg|png|gif/;
+  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = allowedTypes.test(file.mimetype);
+  if (extname && mimetype) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only images are allowed'));
+  }
+};
+
+
+In Router
+
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+// Upload route
+app.post('/upload', upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+  res.json({
+    message: 'Image uploaded successfully!',
+    file: req.file,
+    path: `/uploads/${req.file.filename}`
+  });
+});
+
+
+
+In Index.js
+
+// Serve uploaded files statically
+app.use('/uploads', express.static('uploads'));
+// Ensure 'uploads' folder exists
+const fs = require('fs');
+const uploadDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+
+4. mkdir uploads
+
+5.  <h1>Upload an Image</h1>
+  <form action="http://localhost:3000/upload" method="POST" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" required>
+    <br><br>
+    <button type="submit">Upload</button>
+  </form>
+
+
+
+
+optional
+
+// Set path to 'public/uploads'
+const uploadPath = path.join(__dirname, '../public', 'uploads');
+
+// Ensure the directory exists
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
+
+
+
+app.post('/upload-sport', upload.single('image'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+
+  const imageUrl = `/uploads/${req.file.filename}`;
+
+  try {
+    const newSport = new addSport({
+      image: imageUrl,
+      title: req.body.title,
+      content: req.body.content
+    });
+
+    await newSport.save();
+
+    res.status(201).json({
+      message: 'Sport entry saved!',
+      sport: newSport
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sports Home</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>SportsZone</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/news">News</a>
+        <a href="/scores">Scores</a>
+        <a href="/teams">Teams</a>
+        <a href="/contact">Contact</a>
+        <a href="/signin">Sign In</a>
+        <a href="/signup">Sign Up</a>
+      </nav>
+    </div>
+  </header>
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Welcome to SportsZone</h2>
+      <p>Your daily dose of sports news, highlights, and updates!</p>
+      <a href="#" class="btn">Explore Now</a>
+    </div>
+  </section>
+  <section class="latest-news container">
+    <h2>Latest News</h2>
+    <div class="news-grid">
+      <% SporstsKey.forEach((sport)=>{ %>
+        <article>
+          <img src="<%= sport.image %>" alt="<%= sport.title %>"/>
+          <h3><%= sport.title %></h3>
+          <p><%= sport.description %></p>
+          <a href="#">Read more</a>
+        </article>
+
+        
+      <% }); %>
+      <!-- Example articles, replace with dynamic content -->
+      
+      <!-- <article>
+        <img src="https://images.unsplash.com/photo-1505843276877-05d0a0c8e8a0?auto=format&fit=crop&w=400&q=80" alt="Basketball"/>
+        <h3>Basketball Playoffs Heat Up</h3>
+        <p>Top teams battle it out in the semi-finals for a spot in the grand finale.</p>
+        <a href="#">Read more</a>
+      </article>
+      <article>
+        <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" alt="Tennis"/>
+        <h3>Tennis Star Makes History</h3>
+        <p>New record set at the international tennis tournament.</p>
+        <a href="#">Read more</a>
+      </article> -->
+    </div>
+  </section>
+  <section class="featured-sports">
+    <div class="container">
+      <h2>Featured Sports</h2>
+      <div class="sports-list">
+        <div class="sport-card">
+          <img src="https://images.unsplash.com/photo-1461897104016-0b3b00cc81ee?auto=format&fit=crop&w=400&q=80" alt="Soccer"/>
+          <h4>Soccer</h4>
+        </div>
+        <div class="sport-card">
+          <img src="https://images.unsplash.com/photo-1509228468518-caa204b6a4ba?auto=format&fit=crop&w=400&q=80" alt="Cricket"/>
+          <h4>Cricket</h4>
+        </div>
+        <div class="sport-card">
+          <img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=400&q=80" alt="Basketball"/>
+          <h4>Basketball</h4>
+        </div>
+        <div class="sport-card">
+          <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" alt="Tennis"/>
+          <h4>Tennis</h4>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 SportsZone. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
