@@ -1,17 +1,11 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema(
-    {
-        name: { type: String, required: true },
-        email: { type: String, required: true, unique: true },
-        password: { type: String, required: true },
-        role: {
-            type: String,
-            enum: ["admin", "student"],
-            default: "student"
-        }
-    },
-    { timestamps: true }
-);
+const userSchema = mongoose.Schema({
 
-module.exports = mongoose.model("User", userSchema);
+    username:String,
+    email:String,
+    password:String
+
+}) // Replace with real DB in production
+
+module.exports = mongoose.model("User",userSchema);
