@@ -22,7 +22,7 @@
     "multer": "^2.0.2",
     "path": "^0.12.7",
     "serverless-http": "^3.0.0",
-    "vercel": "^44.5.0"
+    "vercel": "^44.7.3"
   },
   "repository": {
     "type": "git",
