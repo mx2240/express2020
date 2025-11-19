@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "main": "api/index.js",
   "scripts": {
-    "start": "node api/index.js",
-    "abass": "nodemon api/index.js",
-    "dev": "vercel dev"
+    "dev": "vercel dev",
+    "abass": "nodemon api/index.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -24,18 +23,6 @@
     "serverless-http": "^3.0.0",
     "vercel": "^44.7.3"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MRBASSX/express-vercel.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MRBASSX/express-vercel/issues"
-  },
-  "homepage": "https://github.com/MRBASSX/express-vercel#readme",
-  "description": "",
   "devDependencies": {
     "nodemon": "^3.1.10"
   }
