@@ -1,6 +1,14 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const User = require("../models/user");
+
+// Helper: format user data safely
+const safeUser = (user) => ({
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role
+});
 
 // ========================================
 // REGISTER USER
@@ -10,13 +18,16 @@ exports.registerUser = async (req, res) => {
         const { name, email, password, role } = req.body;
 
         if (!name || !email || !password) {
-            return res.status(400).json({ message: "All fields required" });
+            return res.status(400).json({ message: "All fields are required" });
         }
 
         const existing = await User.findOne({ email });
         if (existing) {
-            return res.status(400).json({ message: "User already exists" });
+            return res.status(400).json({ message: "Email already registered" });
         }
+
+        // Validate role
+        const validRole = ["admin", "student"].includes(role) ? role : "student";
 
         const hashed = await bcrypt.hash(password, 10);
 
@@ -24,56 +35,49 @@ exports.registerUser = async (req, res) => {
             name,
             email,
             password: hashed,
-            role: role || "student"
+            role: validRole
         });
 
+        // Create token
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+
         return res.status(201).json({
-            message: "User registered successfully",
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
+            message: "Registration successful",
+            token,
+            user: safeUser(user)
         });
+
     } catch (error) {
-        return res.status(500).json({ message: "Server error", error: error.message });
+        return res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
     }
 };
 
 // ========================================
-// LOGIN USER (WITH DEBUG LOGS)
+// LOGIN USER
 // ========================================
 exports.loginUser = async (req, res) => {
-    console.log("\n====================================");
-    console.log("🔐 LOGIN ATTEMPT");
-    console.log("====================================");
-
     try {
         const { email, password } = req.body;
 
-        console.log("📩 Incoming login data:", { email, password });
-
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            console.log("❌ No user found with email");
-            return res.status(400).json({ message: "Invalid credentials" });
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password required" });
         }
 
-        console.log("👤 User found:", {
-            id: user._id,
-            email: user.email,
-            hashedPassword: user.password
-        });
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "Invalid login credentials" });
+        }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        console.log("🔍 Password match:", isMatch);
-
-        if (!isMatch) {
-            console.log("❌ Incorrect password");
-            return res.status(400).json({ message: "Invalid credentials" });
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            return res.status(400).json({ message: "Invalid login credentials" });
         }
 
         const token = jwt.sign(
@@ -82,23 +86,17 @@ exports.loginUser = async (req, res) => {
             { expiresIn: "7d" }
         );
 
-        console.log("🎟️ JWT created:", token);
-        console.log("✅ LOGIN SUCCESS");
-        console.log("====================================\n");
-
         return res.json({
             message: "Login successful",
             token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
+            user: safeUser(user)
         });
+
     } catch (error) {
-        console.log("🔥 LOGIN ERROR:", error);
-        return res.status(500).json({ message: "Server error", error: error.message });
+        return res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
     }
 };
 
@@ -120,8 +118,13 @@ exports.getUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id).select("-password");
-        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
         return res.json(user);
+
     } catch (error) {
         return res.status(500).json({ message: "Server error", error: error.message });
     }
