@@ -1,114 +1,46 @@
-
-var createError = require('http-errors');
-var express = require('express');
-var app = express();
-const cors = require('cors');
+// api/index.js
+const express = require('express');
 const serverless = require('serverless-http');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var methodOverride = require('method-override')
+const mongoose = require('mongoose');
+const cors = require('cors');
+
 require('dotenv').config();
-const UserRoutes = require('./routes/UserRoutes');
-var indexRouter = require('./routes/Router');
-var indexAuth = require('./routes/account/auth');
-var sportsRoute = require('./routes/sports/sports');
-var formsRoute = require('./routes/account/form');
-var adminRoute = require('./routes/sports/admin');
-var methodOverride = require('method-override')
-const mongose = require('mongoose');
-const fs = require('fs');
 
+const app = express();
 
-
-
-
-
-// // override with POST having ?_method=DELETE
-app.use(methodOverride('_method'))
-
-
-
-
-// // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-
-
-
-app.use(logger('dev'));
+// Middleware
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve uploaded files statically
-// app.use('/uploads', express.static('uploads'));
-// // Ensure 'uploads' folder exists
-// const uploadDir = path.join(__dirname, '../uploads');
-// if (!fs.existsSync(uploadDir)) {
-//   fs.mkdirSync(uploadDir);
-// }
+// MongoDB connection (serverless-safe)
+let isConnected = false;
+async function connectDB() {
+  if (isConnected) return;
+  const db = await mongoose.connect(process.env.MONGO_URI, {
+    bufferCommands: false,
+  });
+  isConnected = db.connections[0].readyState;
+  console.log('✅ MongoDB connected');
+}
+connectDB().catch(err => console.error('MongoDB connection error:', err));
 
-
-
-// // Replace "Ecommerce" with your actual database name
-mongose.connect(process.env.MONGO_URI || process.env.MONGO_URI_OFFLINE).then(() => {
-
-  console.log('✅ Connected to MongoDB');
-
-}).catch((err) => {
-
-  console.error('❌ MongoDB connection error:', err);
-
-}); 
-
-
-
-
-// Or allow only specific origins like this:
-app.use(cors({
-
-  origin:'https://vite-react2-ashen.vercel.app'||'http://localhost:5173',/// change to your frontend URL
-  methods:['GET', 'POST', 'PUT', 'DELETE'],
-  credentials:true
-  
-}));
-
-app.use(express.json()); // <--- VERY IMPORTANT for POST requests with JSON bodies
-
-
-
-// Your routes
-
-app.use('/', sportsRoute);
-app.use('/', indexAuth);
-app.use('/', adminRoute);
-app.use('/', indexRouter);
-app.use('/', formsRoute);
-app.use("/", UserRoutes);
-
-
-// // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+// Sample route
+app.get('/', (req, res) => {
+  res.json({ message: 'Server is running!' });
 });
 
-// // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// Example route from a router (replace with your own)
+const sampleRouter = express.Router();
+sampleRouter.get('/hello', (req, res) => {
+  res.json({ message: 'Hello from /hello route!' });
+});
+app.use('/api', sampleRouter);
 
-//   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+// Error handling
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
 });
 
-
-
-app.listen(process.env.PORT, () => console.log(`127.0.0.1:${process.env.PORT}`));
-
+// Export serverless handler for Vercel
 module.exports = app;
-// module.exports.handler = serverless(app);
+module.exports.handler = serverless(app);

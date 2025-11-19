@@ -1,16 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { register, login } = require('../../controllers/userController');
-const authenticateJWT = require('../../middleware/authMiddleware');
-router.post('/register', register);
-router.post('/login', login);
+const authController = require('../../controllers/authController'); // adjust path
 
-//Protected route
-router.get('/profile', authenticateJWT, (req, res) => {
-    
-
-    res.json({ message: 'This is a protected route', user: req.user });
-    
-});
+// Use the actual function from the controller
+router.get('/login', authController.login);
+router.post('/login', authController.loginPost);
+router.post('/register', authController.register);
 
 module.exports = router;

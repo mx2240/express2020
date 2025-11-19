@@ -1,11 +1,20 @@
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema(
+    {
+        name: { type: String, required: true },
+        email: { type: String, required: true, unique: true },
+        password: { type: String, required: true },
+        role: {
+            type: String,
+            enum: ["admin", "student"],
+            default: "student"
+        }
+    },
+    { timestamps: true }
+);
 
-    username:String,
-    email:String,
-    password:String
+// ✅ Prevent OverwriteModelError in hot-reloading or serverless environments
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
-}) // Replace with real DB in production
-
-module.exports = mongoose.model("User",userSchema);
+module.exports = User;
