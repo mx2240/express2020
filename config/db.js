@@ -1,3 +1,4 @@
+// config/db.js
 const mongoose = require("mongoose");
 
 let cached = global.mongoose;
@@ -12,11 +13,14 @@ async function connectDB() {
     if (!cached.promise) {
         const opts = {
             bufferCommands: false,
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
         };
         cached.promise = mongoose.connect(process.env.MONGO_URI, opts).then((mongoose) => {
             return mongoose;
         });
     }
+
     cached.conn = await cached.promise;
     return cached.conn;
 }
