@@ -1,33 +1,33 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const connectDB = require("./config/db");
+const connectDB = require("../config/db");
 
 // Routes
-const enrollmentRoutes = require("./api/routes/enrollmentRoutes");
-const courseRoutes = require("./api/routes/courseRoutes");
-const studentRoutes = require("./api/routes/studentRoutes");
-const adminRoutes = require("./api/routes/adminRoutes");
-const gradeRoutes = require("./api/routes/gradeRoutes");
-const announcementRoutes = require("./api/routes/announcementRoutes");
-const inquiryRoutes = require("./api/routes/inquiryRoutes");
-const feeRoutes = require("./api/routes/feeRoutes");
+const enrollmentRoutes = require("./routes/enrollmentRoutes");
+const courseRoutes = require("./routes/courseRoutes");
+const studentRoutes = require("./routes/studentRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const gradeRoutes = require("./routes/gradeRoutes");
+const announcementRoutes = require("./routes/announcementRoutes");
+const inquiryRoutes = require("./routes/inquiryRoutes");
+const feeRoutes = require("./routes/feeRoutes");
 
-const attendanceRoutes = require("./api/routes/attendanceRoutes");
-const timetableRoutes = require("./api/routes/timetableRoutes");
-const libraryRoutes = require("./api/routes/libraryRoutes");
-const hostelRoutes = require("./api/routes/hostelRoutes");
-const transportRoutes = require("./api/routes/transportRoutes");
-const driverRoutes = require("./api/routes/driverRoutes");
-const busAttendanceRoutes = require("./api/routes/busAttendanceRoutes");
-const parentRoutes = require("./api/routes/parentRoutes");
-const authRoutes = require("./api/routes/authRoutes");
-const reportRoutes = require("./api/routes/reportRoutes");
-const notificationRoutes = require("./api/routes/notificationRoutes");
-const dashboardRoutes = require("./api/routes/dashboardRoutes");
-const adminSettingsRoutes = require("./api/routes/adminSettingsRoutes");
-const adminProfileRoutes = require("./api/routes/adminProfileRoutes");
-const adminStudentRoutes = require("./api/routes/adminStudentRoutes");
+const attendanceRoutes = require("./routes/attendanceRoutes");
+const timetableRoutes = require("./routes/timetableRoutes");
+const libraryRoutes = require("./routes/libraryRoutes");
+const hostelRoutes = require("./routes/hostelRoutes");
+const transportRoutes = require("./routes/transportRoutes");
+const driverRoutes = require("./routes/driverRoutes");
+const busAttendanceRoutes = require("./routes/busAttendanceRoutes");
+const parentRoutes = require("./routes/parentRoutes");
+const authRoutes = require("./routes/authRoutes");
+const reportRoutes = require("./routes/reportRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
+const adminSettingsRoutes = require("./routes/adminSettingsRoutes");
+const adminProfileRoutes = require("./routes/adminProfileRoutes");
+const adminStudentRoutes = require("./routes/adminStudentRoutes");
 
 
 dotenv.config();
