@@ -1,53 +1,89 @@
-// app.js
 const express = require("express");
-const cors = require("cors");
-// const connectDB = require("./config/db");
 const dotenv = require("dotenv");
+const cors = require("cors");
+const connectDB = require("./config/db");
+
+// Routes
+const enrollmentRoutes = require("./routes/enrollmentRoutes");
+const courseRoutes = require("./routes/courseRoutes");
+const studentRoutes = require("./routes/studentRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const gradeRoutes = require("./routes/gradeRoutes");
+const announcementRoutes = require("./routes/announcementRoutes");
+const inquiryRoutes = require("./routes/inquiryRoutes");
+const feeRoutes = require("./routes/feeRoutes");
+
+const attendanceRoutes = require("./routes/attendanceRoutes");
+const timetableRoutes = require("./routes/timetableRoutes");
+const libraryRoutes = require("./routes/libraryRoutes");
+const hostelRoutes = require("./routes/hostelRoutes");
+const transportRoutes = require("./routes/transportRoutes");
+const driverRoutes = require("./routes/driverRoutes");
+const busAttendanceRoutes = require("./routes/busAttendanceRoutes");
+const parentRoutes = require("./routes/parentRoutes");
+const authRoutes = require("./routes/authRoutes");
+const reportRoutes = require("./routes/reportRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
+const adminSettingsRoutes = require("./routes/adminSettingsRoutes");
+const adminProfileRoutes = require("./routes/adminProfileRoutes");
+const adminStudentRoutes = require("./routes/adminStudentRoutes");
+
 
 dotenv.config();
+connectDB();
 
 const app = express();
 
+// ===========================
 // Middleware
-app.use(cors({
-    origin: process.env.CORS_ORIGIN || "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-}));
+// ===========================
+app.use(cors());
 app.use(express.json());
 
-// Connect DB (on-demand)
-// connectDB().then(() => console.log("✅ MongoDB connected")).catch(err => console.error(err));
+// ===========================
+// API Routes
+// ===========================
+app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/student", studentRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/grades", gradeRoutes);
+app.use("/api/announcements", announcementRoutes);
+app.use("/api/inquiries", inquiryRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/fees", feeRoutes);
+app.use("/api/attendance", attendanceRoutes); // General attendance
+app.use("/api/attendance/bus", busAttendanceRoutes); // Bus attendance
+app.use("/api/timetable", timetableRoutes);
+app.use("/api/library", libraryRoutes);
+app.use("/api/transport", transportRoutes);
+app.use("/api/drivers", driverRoutes);
+app.use("/api/hostels", hostelRoutes);
+app.use("/api/parents", parentRoutes); // Parent routes
+app.use("/api/reports", reportRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/admin/settings", adminSettingsRoutes);
+app.use("/api/admin/profile", adminProfileRoutes);
+app.use("/api/admin/students", adminStudentRoutes);
 
-// Routes
-app.use("/api/enrollments", require("./routes/enrollmentRoutes"));
-app.use("/api/courses", require("./routes/courseRoutes"));
-app.use("/api/students", require("./routes/studentRoutes"));
-app.use("/api/admins", require("./routes/adminRoutes"));
-app.use("/api/grades", require("./routes/gradeRoutes"));
-app.use("/api/announcements", require("./routes/announcementRoutes"));
-app.use("/api/inquiries", require("./routes/inquiryRoutes"));
-app.use("/api/dashboard", require("./routes/dashboardRoutes"));
-app.use("/api/fees", require("./routes/feeRoutes"));
-app.use("/api/attendance", require("./routes/attendanceRoutes"));
-app.use("/api/bus-attendance", require("./routes/busAttendanceRoutes"));
-app.use("/api/timetable", require("./routes/timetableRoutes"));
-app.use("/api/library", require("./routes/libraryRoutes"));
-app.use("/api/transport", require("./routes/transportRoutes"));
-app.use("/api/drivers", require("./routes/driverRoutes"));
-app.use("/api/hostel", require("./routes/hostelRoutes"));
-app.use("/api/parents", require("./routes/parentRoutes"));
-app.use("/api/reports", require("./routes/reportRoutes"));
-app.use("/api/notifications", require("./routes/notificationRoutes"));
-app.use("/api/admin-settings", require("./routes/adminSettingsRoutes"));
-app.use("/api/admin-profiles", require("./routes/adminProfileRoutes"));
-app.use("/api/admin-students", require("./routes/adminStudentRoutes"));
-app.use("/api/users", require("./routes/UserRoutes"));
-app.use("/api/auth", require("./routes/authRoutes"));
+// Auth routes (login/register)
+app.use("/api/auth", authRoutes);
 
-// Test route
+// ===========================
+// Root
+// ===========================
 app.get("/", (req, res) => {
-    res.json({ message: "School API is running on Vercel 🚀" });
+    res.send("✅ School API is running...");
 });
 
-module.exports = app;
+// ===========================
+// Start server
+// ===========================
+const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+
+
+
+module.exports = app
