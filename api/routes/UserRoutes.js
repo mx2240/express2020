@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const UserModel = require('../models/UserModel');   
+const User = require('../models/User');
 
 
 // router.get('/', (req, res) => {
@@ -10,18 +10,18 @@ const UserModel = require('../models/UserModel');
 
 
 router.post('/users/create', async (req, res) => {
- try {
+  try {
 
-   const userData = req.body;
-   const user = new UserModel(userData);
+    const userData = req.body;
+    const user = new User(userData);
     await user.save();
     console.log('Received user data:', userData);
     res.status(201).json({ message: "User created successfully" });
-  
- } catch (error) {
-  
-  console.log(" Error ",error)
- }
+
+  } catch (error) {
+
+    console.log(" Error ", error)
+  }
 });
 
 
@@ -49,16 +49,16 @@ router.post('/users', async (req, res) => {
 
 // Route to get all users
 router.get('/users/all', async (req, res) => {
-    try {
+  try {
 
-        // Fetch all users from the database
-        const users = await UserModel.find();
-        res.status(200).json(users);
+    // Fetch all users from the database
+    const users = await UserModel.find();
+    res.status(200).json(users);
 
-    } catch (error) { 
+  } catch (error) {
 
-       res.status(500).json({ error: 'Error fetching users' });
-    }
+    res.status(500).json({ error: 'Error fetching users' });
+  }
 })
 
 
