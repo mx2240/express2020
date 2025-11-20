@@ -40,11 +40,9 @@ const app = express();
 // Middleware
 // ===========================
 app.use(cors({
-
-    origin: "https://my-frontend-brown-eta.vercel.app/",
+    origin: process.env.CORS_ORIGIN || "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
-
+    credentials: true,
 }));
 app.use(express.json());
 
