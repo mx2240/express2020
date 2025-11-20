@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 
+
+
 // Routes
 const enrollmentRoutes = require("./routes/enrollmentRoutes");
 const courseRoutes = require("./routes/courseRoutes");
@@ -39,11 +41,26 @@ const app = express();
 // ===========================
 // Middleware
 // ===========================
-app.use(cors({
-    origin: process.env.CORS_ORIGIN, // must be a URL if credentials: true
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-}));
+const allowedOrigins = [
+    process.env.CORS_ORIGIN || "https://my-frontend-brown-eta.vercel.app"
+];
+
+app.use(
+    require("cors")({
+        origin: function (origin, callback) {
+            // Allow requests with no origin (like mobile apps or Postman)
+            if (!origin) return callback(null, true);
+
+            if (allowedOrigins.indexOf(origin) !== -1) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+        credentials: true,
+    })
+);
 
 
 
