@@ -28,6 +28,7 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const adminSettingsRoutes = require("./routes/adminSettingsRoutes");
 const adminProfileRoutes = require("./routes/adminProfileRoutes");
 const adminStudentRoutes = require("./routes/adminStudentRoutes");
+const userRoutes = require("./routes/UserRoutes");
 
 
 dotenv.config();
@@ -56,33 +57,34 @@ app.use(express.json());
 // ===========================
 // API Routes
 // ===========================
-app.use("/api/enrollments", enrollmentRoutes);
-app.use("/api/courses", courseRoutes);
-app.use("/api/student", studentRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/grades", gradeRoutes);
-app.use("/api/announcements", announcementRoutes);
-app.use("/api/inquiries", inquiryRoutes);
-app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/fees", feeRoutes);
-app.use("/api/attendance", attendanceRoutes); // General attendance
-app.use("/api/attendance/bus", busAttendanceRoutes); // Bus attendance
-app.use("/api/timetable", timetableRoutes);
-app.use("/api/library", libraryRoutes);
-app.use("/api/transport", transportRoutes);
-app.use("/api/drivers", driverRoutes);
-app.use("/api/hostels", hostelRoutes);
-app.use("/api/parents", parentRoutes); // Parent routes
-app.use("/api/reports", reportRoutes);
-app.use("/api/notifications", notificationRoutes);
-app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/admin/settings", adminSettingsRoutes);
-app.use("/api/admin/profile", adminProfileRoutes);
-app.use("/api/admin/students", adminStudentRoutes);
+app.use("/", enrollmentRoutes);
+app.use("/", courseRoutes);
+app.use("/", studentRoutes);
+app.use("/", adminRoutes);
+app.use("/", gradeRoutes);
+app.use("/", announcementRoutes);
+app.use("/", inquiryRoutes);
+app.use("/", dashboardRoutes);
+app.use("/", feeRoutes);
+app.use("/", attendanceRoutes); // General attendance
+app.use("/", busAttendanceRoutes); // Bus attendance
+app.use("/", timetableRoutes);
+app.use("/", libraryRoutes);
+app.use("/", transportRoutes);
+app.use("/", driverRoutes);
+app.use("/", hostelRoutes);
+app.use("/", parentRoutes); // Parent routes
+app.use("/", reportRoutes);
+app.use("/", notificationRoutes);
+app.use("/", dashboardRoutes);
+app.use("/", adminSettingsRoutes);
+app.use("/", adminProfileRoutes);
+app.use("/", adminStudentRoutes);
+app.use("/", userRoutes);
 
 // Auth routes (login/register)
 // app.use("/api/auth", authRoutes);
-app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/", require("./routes/authRoutes"));
 
 
 // ===========================
