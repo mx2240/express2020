@@ -8,7 +8,7 @@ const {
     returnBook,
     myBorrowedBooks,
     allBorrowRecords
-} = require("../../controllers/libraryController");
+} = require("../controllers/libraryController");
 
 // Admin
 router.post("/add", addBook);
