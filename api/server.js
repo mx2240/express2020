@@ -57,34 +57,34 @@ app.use(express.json());
 // ===========================
 // API Routes
 // ===========================
-app.use("/", enrollmentRoutes);
-app.use("/", courseRoutes);
-app.use("/", studentRoutes);
-app.use("/", adminRoutes);
-app.use("/", gradeRoutes);
-app.use("/", announcementRoutes);
-app.use("/", inquiryRoutes);
-app.use("/", dashboardRoutes);
-app.use("/", feeRoutes);
-app.use("/", attendanceRoutes); // General attendance
-app.use("/", busAttendanceRoutes); // Bus attendance
-app.use("/", timetableRoutes);
-app.use("/", libraryRoutes);
-app.use("/", transportRoutes);
-app.use("/", driverRoutes);
-app.use("/", hostelRoutes);
-app.use("/", parentRoutes); // Parent routes
-app.use("/", reportRoutes);
-app.use("/", notificationRoutes);
-app.use("/", dashboardRoutes);
-app.use("/", adminSettingsRoutes);
-app.use("/", adminProfileRoutes);
-app.use("/", adminStudentRoutes);
-app.use("/", userRoutes);
+app.use("/api", enrollmentRoutes);
+app.use("/api", courseRoutes);
+app.use("/api", studentRoutes);
+app.use("/api", adminRoutes);
+app.use("/api", gradeRoutes);
+app.use("/api", announcementRoutes);
+app.use("/api", inquiryRoutes);
+app.use("/api", dashboardRoutes);
+app.use("/api", feeRoutes);
+app.use("/api", attendanceRoutes); // General attendance
+app.use("/api", busAttendanceRoutes); // Bus attendance
+app.use("/api", timetableRoutes);
+app.use("/api", libraryRoutes);
+app.use("/api", transportRoutes);
+app.use("/api", driverRoutes);
+app.use("/api", hostelRoutes);
+app.use("/api", parentRoutes); // Parent routes
+app.use("/api", reportRoutes);
+app.use("/api", notificationRoutes);
+app.use("/api", dashboardRoutes);
+app.use("/api", adminSettingsRoutes);
+app.use("/api", adminProfileRoutes);
+app.use("/api", adminStudentRoutes);
+app.use("/api", userRoutes);
 
 // Auth routes (login/register)
 // app.use("/api/auth", authRoutes);
-app.use("/", require("./routes/authRoutes"));
+app.use("/api", require("./routes/authRoutes"));
 
 
 // ===========================
