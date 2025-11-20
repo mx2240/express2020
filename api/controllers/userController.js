@@ -1,99 +1,128 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const Users = require('../models/User');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const { start } = require('repl');
+const User = require("../models/user");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
+// ===============================
+// Register
+// ===============================
+exports.registerUser = async (req, res) => {
+    try {
+        const { name, email, password, role } = req.body;
 
+        if (!name || !email || !password) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
 
+        // Check if email exists
+        let user = await User.findOne({ email });
+        if (user) {
+            return res.status(400).json({ message: "Email already registered" });
+        }
 
-// Registration And Login start
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-const register = async (req, res) => {
+        // Create user
+        user = await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            role,
+        });
 
-  const { username, email, password } = req.body;
-
-  const existingUserName = await Users.findOne({ username });
-  const existingUserEmail = await Users.findOne({ email });
-
-  if ((existingUserName || existingUserEmail)) return res.status(400).json({ message: 'User already exists' });
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const RegisterUser = new Users({ username, email, password: hashedPassword });
-  const RegisteredUserSaved = await RegisterUser.save();
-
-  if (RegisteredUserSaved) {
-
-    res.status(201).json({ message: 'User registered successfully' });
-  }
+        res.status(201).json({
+            message: "User registered successfully",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
 };
 
+// ===============================
+// Login
+// ===============================
+exports.loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
 
+        // Validation
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email & password required" });
+        }
 
-const login = async (req, res) => {
+        const user = await User.findOne({ email });
 
-  const { email, password } = req.body;
+        if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
-  const user = await Users.findOne({ email });
-  if (!user) return res.status(401).json({ message: 'Invalid credentials' });
+        // Compare password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch)
+            return res.status(400).json({ message: "Invalid credentials" });
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
+        // Create token
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
 
-  const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-  res.json({ token });
+        res.json({
+            message: "Login successful",
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
 };
 
-// Registration And Login End
-
-
-
-
-
-// Uploading An Image Start
-
-// Set path to 'public/uploads'
-const uploadPath = path.join(__dirname, '../public', 'uploads');
-
-// Ensure the directory exists
-if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath, { recursive: true });
-}
-
-
-
-// Set up storage for multer
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadPath); // Uploads directory
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
-  }
-});
-
-// File filter (optional, e.g., only images)
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|gif/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
-  if (extname && mimetype) {
-    cb(null, true);
-  } else {
-    cb(new Error('Only images are allowed'));
-  }
+// ===============================
+// Get Profile
+// ===============================
+exports.getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select("-password");
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
 };
 
-const upload = multer({ storage: storage, fileFilter: fileFilter });
+// ===============================
+// Update Profile
+// ===============================
+exports.updateUserProfile = async (req, res) => {
+    try {
+        const { name, password } = req.body;
 
-// Uploading An Image Ends
+        let updateData = {};
 
+        if (name) updateData.name = name;
 
+        if (password) {
+            updateData.password = await bcrypt.hash(password, 10);
+        }
 
+        const user = await User.findByIdAndUpdate(req.user.id, updateData, {
+            new: true,
+        }).select("-password");
 
-
-module.exports = { register, login, upload };
+        res.json({
+            message: "Profile updated",
+            user,
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};

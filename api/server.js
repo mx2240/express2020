@@ -28,7 +28,7 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const adminSettingsRoutes = require("./routes/adminSettingsRoutes");
 const adminProfileRoutes = require("./routes/adminProfileRoutes");
 const adminStudentRoutes = require("./routes/adminStudentRoutes");
-const userRoutes = require("./routes/UserRoutes");
+// const userRoutes = require("./routes/UserRoutes");
 
 
 dotenv.config();
@@ -81,6 +81,7 @@ app.use("/api", adminSettingsRoutes);
 app.use("/api", adminProfileRoutes);
 app.use("/api", adminStudentRoutes);
 app.use("/api", userRoutes);
+
 
 // Auth routes (login/register)
 // app.use("/api/auth", authRoutes);
