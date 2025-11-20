@@ -4,7 +4,7 @@
   "main": "api/app.js",
   "scripts": {
     "dev-local": "vercel dev",
-    "abass": "nodemon api/app.js"
+    "abass": "nodemon app.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
