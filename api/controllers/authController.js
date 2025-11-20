@@ -370,3 +370,50 @@ exports.registerUser = async (req, res) => {
         return res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+
+
+
+
+
+
+// const User = require("../models/User");
+// const crypto = require("crypto");
+// const nodemailer = require("nodemailer");
+
+// exports.forgotPassword = async (req, res) => {
+//     const { email } = req.body;
+
+//     const user = await User.findOne({ email });
+//     if (!user) return res.json({ message: "Email not found" });
+
+//     const token = crypto.randomBytes(32).toString("hex");
+
+//     user.resetToken = token;
+//     user.resetExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+//     await user.save();
+
+//     res.json({
+//         message: "Reset link sent",
+//         resetLink: `/reset-password/${token}`,
+//     });
+// };
+
+// exports.resetPassword = async (req, res) => {
+//     const { token } = req.params;
+//     const { password } = req.body;
+
+//     const user = await User.findOne({
+//         resetToken: token,
+//         resetExpire: { $gt: Date.now() },
+//     });
+
+//     if (!user) return res.json({ message: "Invalid or expired token" });
+
+//     user.password = password;
+//     user.resetToken = undefined;
+//     user.resetExpire = undefined;
+//     await user.save();
+
+//     res.json({ message: "Password reset successful" });
+// };

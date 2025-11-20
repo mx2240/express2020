@@ -11,6 +11,7 @@ const express = require("express");
 const router = express.Router();
 const authCtrl = require("../controllers/authController");
 const { verifyToken } = require("../middleware/authMiddleware");
+const { forgotPassword, resetPassword } = require("../controllers/authController");
 
 // registration & login
 router.post("/register", authCtrl.registerUser);
@@ -27,4 +28,11 @@ router.get("/verify-email", authCtrl.verifyEmail);
 router.post("/request-reset", authCtrl.requestPasswordReset);
 router.post("/reset-password", authCtrl.resetPassword);
 
+
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
+
 module.exports = router;
+
+
+
