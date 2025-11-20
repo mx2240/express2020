@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const Users = require('../models/user');
+const Users = require('../models/User');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -13,39 +13,39 @@ const { start } = require('repl');
 
 const register = async (req, res) => {
 
-    const { username, email, password } = req.body;
+  const { username, email, password } = req.body;
 
-    const existingUserName = await Users.findOne({ username });
-    const existingUserEmail = await Users.findOne({ email });
+  const existingUserName = await Users.findOne({ username });
+  const existingUserEmail = await Users.findOne({ email });
 
-    if ((existingUserName || existingUserEmail)) return res.status(400).json({ message: 'User already exists' });
+  if ((existingUserName || existingUserEmail)) return res.status(400).json({ message: 'User already exists' });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const RegisterUser = new Users({ username, email, password: hashedPassword });
-    const RegisteredUserSaved = await RegisterUser.save();
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const RegisterUser = new Users({ username, email, password: hashedPassword });
+  const RegisteredUserSaved = await RegisterUser.save();
 
-    if (RegisteredUserSaved) {
+  if (RegisteredUserSaved) {
 
-        res.status(201).json({ message: 'User registered successfully' });
-    }
+    res.status(201).json({ message: 'User registered successfully' });
+  }
 };
-  
+
 
 
 const login = async (req, res) => {
 
-    const { email , password } = req.body;
+  const { email, password } = req.body;
 
-    const user = await Users.findOne({ email });
-    if (!user) return res.status(401).json({ message: 'Invalid credentials' });
+  const user = await Users.findOne({ email });
+  if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-    });
-    res.json({ token });
+  const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+  res.json({ token });
 };
 
 // Registration And Login End
@@ -69,7 +69,7 @@ if (!fs.existsSync(uploadPath)) {
 // Set up storage for multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null,uploadPath); // Uploads directory
+    cb(null, uploadPath); // Uploads directory
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
@@ -96,4 +96,4 @@ const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 
 
-module.exports = { register, login, upload};
+module.exports = { register, login, upload };
