@@ -17,7 +17,7 @@ app.use(cors({
 app.use(express.json());
 
 // Connect DB (on-demand)
-connectDB().then(() => console.log("✅ MongoDB connected")).catch(err => console.error(err));
+// connectDB().then(() => console.log("✅ MongoDB connected")).catch(err => console.error(err));
 
 // Routes
 app.use("/api/enrollments", require("./routes/enrollmentRoutes"));
