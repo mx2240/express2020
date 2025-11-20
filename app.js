@@ -28,6 +28,7 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const adminSettingsRoutes = require("./routes/adminSettingsRoutes");
 const adminProfileRoutes = require("./routes/adminProfileRoutes");
 const adminStudentRoutes = require("./routes/adminStudentRoutes");
+const userRoutes = require("./routes/UserRoutes");
 
 
 dotenv.config();
@@ -38,7 +39,13 @@ const app = express();
 // ===========================
 // Middleware
 // ===========================
-app.use(cors());
+app.use(cors({
+
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+
+}));
 app.use(express.json());
 
 // ===========================
@@ -67,6 +74,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/admin/settings", adminSettingsRoutes);
 app.use("/api/admin/profile", adminProfileRoutes);
 app.use("/api/admin/students", adminStudentRoutes);
+app.use("/api/users", userRoutes);
 
 // Auth routes (login/register)
 app.use("/api/auth", authRoutes);
