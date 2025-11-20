@@ -1,6 +1,6 @@
 const Enrollment = require("../models/Enrollment");
 const Course = require("../models/Course");
-const Student = require("../models/User");
+const Student = require("../models/user");
 
 exports.getStudentDashboard = async (req, res) => {
     try {

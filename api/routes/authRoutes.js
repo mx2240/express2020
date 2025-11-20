@@ -1,38 +1,38 @@
-// const express = require("express");
-// const router = express.Router();
-// const { registerUser, loginUser } = require("../controllers/authController");
-
-// router.post("/register", registerUser);
-// router.post("/login", loginUser);
-
-// module.exports = router;
-
 const express = require("express");
 const router = express.Router();
-const authCtrl = require("../controllers/authController");
-const { verifyToken } = require("../middleware/authMiddleware");
-const { forgotPassword, resetPassword } = require("../controllers/authController");
+const { registerUser, loginUser } = require("../controllers/authController");
 
-// registration & login
-router.post("/register", authCtrl.registerUser);
-router.post("/login", authCtrl.loginUser);
-
-// refresh, logout
-router.post("/refresh", authCtrl.refreshToken);
-router.post("/logout", authCtrl.logout);
-
-// email verify
-router.get("/verify-email", authCtrl.verifyEmail);
-
-// password reset
-router.post("/request-reset", authCtrl.requestPasswordReset);
-router.post("/reset-password", authCtrl.resetPassword);
-
-
-router.post("/forgot-password", forgotPassword);
-router.post("/reset-password/:token", resetPassword);
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 
 module.exports = router;
+
+// const express = require("express");
+// const router = express.Router();
+// const authCtrl = require("../controllers/authController");
+// const { verifyToken } = require("../middleware/authMiddleware");
+// const { forgotPassword, resetPassword } = require("../controllers/authController");
+
+// // registration & login
+// router.post("/register", authCtrl.registerUser);
+// router.post("/login", authCtrl.loginUser);
+
+// // refresh, logout
+// router.post("/refresh", authCtrl.refreshToken);
+// router.post("/logout", authCtrl.logout);
+
+// // email verify
+// router.get("/verify-email", authCtrl.verifyEmail);
+
+// // password reset
+// router.post("/request-reset", authCtrl.requestPasswordReset);
+// router.post("/reset-password", authCtrl.resetPassword);
+
+
+// router.post("/forgot-password", forgotPassword);
+// router.post("/reset-password/:token", resetPassword);
+
+// module.exports = router;
 
 
 

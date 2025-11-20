@@ -1,18 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { registerParent, loginParent, getParentChildren, getChildDashboard } = require("../controllers/parentController");
-const { verifyToken, verifyAdmin, verifyParent } = require("../middleware/authMiddleware");
 
-// Register parent (Admin only)
-router.post("/register", verifyToken, verifyAdmin, registerParent);
+const parentCtrl = require("../controllers/parentController");
 
-// Parent login
-router.post("/login", loginParent);
-
-// Parent-only: get their children
-router.get("/:parentId/children", verifyToken, verifyParent, getParentChildren);
-
-// Parent-only: view child's dashboard
-router.get("/child/:studentId", verifyToken, verifyParent, getChildDashboard);
+router.post("/register", parentCtrl.registerParent);
+router.post("/login", parentCtrl.loginParent);
+router.get("/:parentId/children", parentCtrl.getParentChildren);
+router.get("/child/:studentId", parentCtrl.getChildDashboard);
 
 module.exports = router;

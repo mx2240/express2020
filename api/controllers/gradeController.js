@@ -1,5 +1,5 @@
 const Grade = require("../models/Grade");
-const User = require("../models/User");
+const User = require("../models/user");
 const Course = require("../models/Course");
 
 // Convert numeric score to letter grade
