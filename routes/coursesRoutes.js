@@ -6,13 +6,21 @@ const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
 // CREATE COURSE
 router.post("/", verifyToken, verifyAdmin, async (req, res) => {
     try {
-        const newCourse = new Course(req.body);
-        await newCourse.save();
+        const { title, description, duration } = req.body;
+
+        if (!title || !description || !duration) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        const newCourse = new Course({ title, description, duration });
+        await newCourse.save(); // <- possible failure point
         res.status(201).json(newCourse);
     } catch (err) {
+        console.error("Error creating course:", err); // add this
         res.status(500).json({ message: "Error creating course" });
     }
 });
+
 
 // GET ALL COURSES
 router.get("/", verifyToken, async (req, res) => {

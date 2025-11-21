@@ -10,7 +10,6 @@ const enrollmentRoutes = require("./routes/enrollmentRoutes");
 const courseRoutes = require("./routes/coursesRoutes");
 const studentRoutes = require("./routes/studentsRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-const gradeRoutes = require("./routes/gradeRoutes");
 const announcementRoutes = require("./routes/announcementRoutes");
 const inquiryRoutes = require("./routes/inquiryRoutes");
 const feesRoutes = require("./routes/feesRoutes");
@@ -29,7 +28,7 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const adminSettingsRoutes = require("./routes/adminSettingsRoutes");
 const adminProfileRoutes = require("./routes/adminProfileRoutes");
 const adminStudentRoutes = require("./routes/adminStudentRoutes");
-// const userRoutes = require("./routes/UserRoutes");
+const gradeRoutes = require("./routes/gradeRoutes");
 
 
 dotenv.config();
@@ -87,7 +86,6 @@ app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/student", studentRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/grades", gradeRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/inquiries", inquiryRoutes);
 app.use("/api/dashboard", dashboardRoutes);
@@ -107,11 +105,8 @@ app.use("/api/admin/settings", adminSettingsRoutes);
 app.use("/api/admin/profile", adminProfileRoutes);
 app.use("/api/admin/students", adminStudentRoutes);
 app.use("/api/fees", feesRoutes);
+app.use("/api/grades", gradeRoutes);
 
-// app.use("/api/students", require("./routes/studentsRoutes"));
-// app.use("/api/courses", require("./routes/coursesRoutes"));
-// app.use("/api/enrollments", require("./routes/enrollmentRoutes"));
-// app.use("/api/fees", require("./routes/feesRoutes"));
 
 
 
@@ -122,12 +117,6 @@ app.use("/api/fees", feesRoutes);
 app.use("/api/auth", authRoutes);
 
 
-
-// // React build catch-all
-// app.use(express.static("client/build"));
-// app.get("*", (req, res) => {
-//     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-// });
 
 
 
