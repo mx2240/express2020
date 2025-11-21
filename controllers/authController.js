@@ -152,58 +152,58 @@ const logout = async (req, res) => {
 // ==========================
 // VERIFY EMAIL
 // ==========================
-// const verifyEmail = async (req, res) => {
-//     try {
-//         const { token } = req.query;
-//         if (!token) return res.status(400).json({ message: "Token missing" });
+const verifyEmail = async (req, res) => {
+    try {
+        const { token } = req.query;
+        if (!token) return res.status(400).json({ message: "Token missing" });
 
-//         const record = await VerificationToken.findOne({ token });
-//         if (!record) return res.status(400).json({ message: "Invalid or expired token" });
+        const record = await VerificationToken.findOne({ token });
+        if (!record) return res.status(400).json({ message: "Invalid or expired token" });
 
-//         if (record.expiresAt < new Date()) {
-//             await VerificationToken.deleteOne({ _id: record._id });
-//             return res.status(400).json({ message: "Token expired" });
-//         }
+        if (record.expiresAt < new Date()) {
+            await VerificationToken.deleteOne({ _id: record._id });
+            return res.status(400).json({ message: "Token expired" });
+        }
 
-//         await User.findByIdAndUpdate(record.user, { isVerified: true });
-//         await VerificationToken.deleteOne({ _id: record._id });
+        await User.findByIdAndUpdate(record.user, { isVerified: true });
+        await VerificationToken.deleteOne({ _id: record._id });
 
-//         res.json({ message: "Email verified successfully" });
-//     } catch (err) {
-//         console.error("verifyEmail error:", err);
-//         res.status(500).json({ message: "Server error", error: err.message });
-//     }
-// };
+        res.json({ message: "Email verified successfully" });
+    } catch (err) {
+        console.error("verifyEmail error:", err);
+        res.status(500).json({ message: "Server error", error: err.message });
+    }
+};
 
 // ==========================
 // REQUEST PASSWORD RESET
 // ==========================
-// const requestPasswordReset = async (req, res) => {
-//     try {
-//         const { email } = req.body;
-//         if (!email) return res.status(400).json({ message: "Email required" });
+const requestPasswordReset = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ message: "Email required" });
 
-//         const user = await User.findOne({ email });
-//         if (!user) return res.status(404).json({ message: "User not found" });
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-//         const token = crypto.randomBytes(32).toString("hex");
-//         const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
-//         await PasswordReset.create({ user: user._id, token, expiresAt });
+        const token = crypto.randomBytes(32).toString("hex");
+        const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+        await PasswordReset.create({ user: user._id, token, expiresAt });
 
-//         const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-//         await transporter.sendMail({
-//             from: process.env.EMAIL_FROM,
-//             to: user.email,
-//             subject: "Password reset",
-//             html: `<p>Reset your password: <a href="${resetUrl}">${resetUrl}</a></p>`,
-//         });
+        const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+        await transporter.sendMail({
+            from: process.env.EMAIL_FROM,
+            to: user.email,
+            subject: "Password reset",
+            html: `<p>Reset your password: <a href="${resetUrl}">${resetUrl}</a></p>`,
+        });
 
-//         res.json({ message: "Password reset email sent" });
-//     } catch (err) {
-//         console.error("requestPasswordReset error:", err);
-//         res.status(500).json({ message: "Server error", error: err.message });
-//     }
-// };
+        res.json({ message: "Password reset email sent" });
+    } catch (err) {
+        console.error("requestPasswordReset error:", err);
+        res.status(500).json({ message: "Server error", error: err.message });
+    }
+};
 
 // ==========================
 // RESET PASSWORD
