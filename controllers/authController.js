@@ -2,7 +2,7 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const User = require("../models/User"); // EXACT casing
+const User = require("../models/user"); // EXACT casing
 const RefreshToken = require("../models/RefreshToken");
 const VerificationToken = require("../models/VerificationToken");
 const PasswordReset = require("../models/PasswordReset");
