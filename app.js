@@ -66,8 +66,10 @@ const app = express();
 app.use(cors({
     origin: "https://my-frontend-brown-eta.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true, // if you use cookies or authorization headers
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
 }));
+
 
 
 
