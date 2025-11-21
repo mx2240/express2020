@@ -41,26 +41,30 @@ const app = express();
 // ===========================
 // Middleware
 // ===========================
+
+// Allow frontend origin
 const allowedOrigins = [
-    process.env.CORS_ORIGIN || "https://my-frontend-brown-eta.vercel.app"
+    "https://my-frontend-brown-eta.vercel.app",
+    "http://localhost:3000" // optional for local dev
 ];
 
-app.use(
-    require("cors")({
-        origin: function (origin, callback) {
-            // Allow requests with no origin (like mobile apps or Postman)
-            if (!origin) return callback(null, true);
+app.use(cors({
+    origin: function (origin, callback) {
+        // allow requests with no origin (like Postman)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true, // allow cookies if needed
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
-            if (allowedOrigins.indexOf(origin) !== -1) {
-                callback(null, true);
-            } else {
-                callback(new Error("Not allowed by CORS"));
-            }
-        },
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-        credentials: true,
-    })
-);
+// Make sure this is **above your routes**
+
 
 
 
