@@ -64,11 +64,7 @@ app.use((req, res, next) => {
 
 
 
-// React build catch-all
-app.use(express.static("client/build"));
-app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-});
+
 
 
 
@@ -106,6 +102,20 @@ app.use("/api/fees", feesRoutes);
 
 // Auth routes (login/register)
 app.use("/api/auth", authRoutes);
+
+
+
+// React build catch-all
+app.use(express.static("client/build"));
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+});
+
+
+
+
+
+
 
 // ===========================
 // Root
