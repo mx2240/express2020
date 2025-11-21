@@ -1,15 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const { createCourse, getCourses, getCourse } = require("../controllers/courseController");
+const Course = require("../models/Course");
 const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
 
-// ➤ Create a course (Admin only)
-router.post("/create", verifyToken, verifyAdmin, createCourse);
+// CREATE COURSE
+router.post("/", verifyToken, verifyAdmin, async (req, res) => {
+    try {
+        const newCourse = new Course(req.body);
+        await newCourse.save();
+        res.status(201).json(newCourse);
+    } catch (err) {
+        res.status(500).json({ message: "Error creating course" });
+    }
+});
 
-// ➤ Get all courses
-router.get("/", getCourses);
+// GET ALL COURSES
+router.get("/", verifyToken, async (req, res) => {
+    try {
+        const courses = await Course.find();
+        res.json(courses);
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching courses" });
+    }
+});
 
-// ➤ Get single course by ID
-router.get("/:id", getCourse);
 
 module.exports = router;

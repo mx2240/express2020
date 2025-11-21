@@ -54,3 +54,8 @@ const feeSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Fee", feeSchema);
+
+
+
+
+
