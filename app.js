@@ -41,29 +41,28 @@ const app = express();
 // ===========================
 // Middleware
 // ===========================
-
-// Allow frontend origin
 const allowedOrigins = [
     "https://my-frontend-brown-eta.vercel.app",
-    "http://localhost:3000" // optional for local dev
+    // "http://localhost:3000" // optional for local dev
 ];
 
-app.use(cors({
-    origin: function (origin, callback) {
-        // allow requests with no origin (like Postman)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-    },
-    credentials: true, // allow cookies if needed
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
+// CORS Middleware
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+        res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+    }
 
-// Make sure this is **above your routes**
+    // Handle preflight
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(204);
+    }
+    next();
+});
+
 
 
 
