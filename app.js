@@ -7,8 +7,8 @@ const connectDB = require("./config/db");
 
 // Routes
 const enrollmentRoutes = require("./routes/enrollmentRoutes");
-const courseRoutes = require("./routes/courseRoutes");
-const studentRoutes = require("./routes/studentRoutes");
+const courseRoutes = require("./routes/coursesRoutes");
+const studentRoutes = require("./routes/studentsRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const gradeRoutes = require("./routes/gradeRoutes");
 const announcementRoutes = require("./routes/announcementRoutes");
@@ -98,6 +98,15 @@ app.use("/api/admin/settings", adminSettingsRoutes);
 app.use("/api/admin/profile", adminProfileRoutes);
 app.use("/api/admin/students", adminStudentRoutes);
 app.use("/api/fees", feesRoutes);
+
+// app.use("/api/students", require("./routes/studentsRoutes"));
+// app.use("/api/courses", require("./routes/coursesRoutes"));
+// app.use("/api/enrollments", require("./routes/enrollmentRoutes"));
+// app.use("/api/fees", require("./routes/feesRoutes"));
+
+
+
+
 // app.use("/api/users", userRoutes);
 
 // Auth routes (login/register)
