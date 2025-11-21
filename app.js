@@ -105,11 +105,11 @@ app.use("/api/auth", authRoutes);
 
 
 
-// React build catch-all
-app.use(express.static("client/build"));
-app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-});
+// // React build catch-all
+// app.use(express.static("client/build"));
+// app.get("*", (req, res) => {
+//     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+// });
 
 
 
