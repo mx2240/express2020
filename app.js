@@ -13,8 +13,7 @@ const adminRoutes = require("./routes/adminRoutes");
 const gradeRoutes = require("./routes/gradeRoutes");
 const announcementRoutes = require("./routes/announcementRoutes");
 const inquiryRoutes = require("./routes/inquiryRoutes");
-const feeRoutes = require("./routes/feeRoutes");
-
+const feesRoutes = require("./routes/feesRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
 const timetableRoutes = require("./routes/timetableRoutes");
 const libraryRoutes = require("./routes/libraryRoutes");
@@ -65,6 +64,12 @@ app.use((req, res, next) => {
 
 
 
+// React build catch-all
+app.use(express.static("client/build"));
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+});
+
 
 
 
@@ -81,7 +86,7 @@ app.use("/api/grades", gradeRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/inquiries", inquiryRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/fees", feeRoutes);
+
 app.use("/api/attendance", attendanceRoutes); // General attendance
 app.use("/api/attendance/bus", busAttendanceRoutes); // Bus attendance
 app.use("/api/timetable", timetableRoutes);
@@ -96,6 +101,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/admin/settings", adminSettingsRoutes);
 app.use("/api/admin/profile", adminProfileRoutes);
 app.use("/api/admin/students", adminStudentRoutes);
+app.use("/api/fees", feesRoutes);
 // app.use("/api/users", userRoutes);
 
 // Auth routes (login/register)
@@ -107,6 +113,11 @@ app.use("/api/auth", authRoutes);
 app.get("/", (req, res) => {
     res.send("✅ School API is running...");
 });
+
+
+
+
+
 
 // ===========================
 // Start server
