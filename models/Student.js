@@ -29,13 +29,26 @@
 
 
 
+// const mongoose = require("mongoose");
+
+// const StudentSchema = new mongoose.Schema({
+//     name: { type: String, required: true, trim: true },
+//     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+//     studentClass: { type: String, default: "" },
+//     phone: { type: String, default: "" },
+// }, { timestamps: true });
+
+// module.exports = mongoose.model("Student", StudentSchema);
+
 const mongoose = require("mongoose");
 
-const StudentSchema = new mongoose.Schema({
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    studentClass: { type: String, default: "" },
-    phone: { type: String, default: "" },
+const studentSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: String,
+    course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+    fees: [{ type: mongoose.Schema.Types.ObjectId, ref: "FeeRecord" }]
 }, { timestamps: true });
 
-module.exports = mongoose.model("Student", StudentSchema);
+module.exports = mongoose.model("Student", studentSchema);
+
