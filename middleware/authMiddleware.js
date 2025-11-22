@@ -1,41 +1,26 @@
+
 const jwt = require("jsonwebtoken");
+// const { secretKey } = require("../config/config");
 
-// ------------------ Verify Token ------------------
-const verifyToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    console.log("Authorization header:", authHeader); // debug
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        console.log("No token provided");
-        return res.status(401).json({ message: "No token provided" });
-    }
-
-    const token = authHeader.split(" ")[1];
+const verifyToken = async (req, res, next) => {
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("Decoded token:", decoded); // debug
-        req.user = decoded; // attach to request
+        const token = req.headers["authorization"].replace("Bearer ", "");
+        if (!token) throw new Error("Authentication token is missing");
+        const decoded = await jwt.verify(token, secretKey);
+        req.user = decoded;
         next();
     } catch (err) {
-        console.error("Token verification failed:", err);
-        return res.status(401).json({ message: "Invalid token" });
+        res.status(401).json({ message: "Invalid authentication token" });
     }
 };
 
-// ------------------ Verify Admin ------------------
-const verifyAdmin = (req, res, next) => {
-    if (!req.user) {
-        console.log("req.user is undefined");
-        return res.status(401).json({ message: "User not found" });
+const verifyAdmin = async (req, res, next) => {
+    try {
+        if (req.user.role !== "admin") throw new Error("Only admin can access this route");
+        next();
+    } catch (err) {
+        res.status(403).json({ message: "Only admin can access this route" });
     }
-
-    console.log("User role:", req.user.role); // debug
-    if (req.user.role !== "admin") {
-        console.log("User is not admin");
-        return res.status(403).json({ message: "Admin access required" });
-    }
-
-    next();
 };
 
 module.exports = { verifyToken, verifyAdmin };
