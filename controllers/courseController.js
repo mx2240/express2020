@@ -1,6 +1,6 @@
 const Course = require("../models/Course");
 
-// Create course (Admin only)
+// Create course
 exports.createCourse = async (req, res) => {
     try {
         const { title, description, duration } = req.body;
@@ -14,7 +14,7 @@ exports.createCourse = async (req, res) => {
     }
 };
 
-// Get all courses (Any logged-in user)
+// Get all courses
 exports.getCourses = async (req, res) => {
     try {
         const courses = await Course.find();
@@ -25,7 +25,7 @@ exports.getCourses = async (req, res) => {
     }
 };
 
-// Delete course (Admin only)
+// Delete course
 exports.deleteCourse = async (req, res) => {
     try {
         const course = await Course.findByIdAndDelete(req.params.id);
