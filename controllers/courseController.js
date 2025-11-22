@@ -5,6 +5,7 @@ exports.createCourse = async (req, res) => {
     try {
         const { title, description, duration } = req.body;
         if (!title) return res.status(400).json({ ok: false, message: "Title required" });
+
         const course = await Course.create({ title, description, duration });
         res.status(201).json({ ok: true, body: course });
     } catch (err) {
