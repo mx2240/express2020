@@ -34,11 +34,14 @@ const User = require("../models/user");
 router.get("/profile", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const admin = await User.findById(req.user.id).select("-password");
-        res.json({ ok: true, body: admin });
+        if (!admin) return res.status(404).json({ ok: false, message: "Admin not found" });
+
+        res.json({ ok: true, body: admin }); // ✅ Always returns object
     } catch (err) {
         res.status(500).json({ ok: false, message: err.message });
     }
 });
+
 
 // ------------------ Get All Students ------------------
 router.get("/students", verifyToken, verifyAdmin, async (req, res) => {
