@@ -1,63 +1,94 @@
-// routes/feesRoutes.js
 const express = require("express");
 const router = express.Router();
+const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
 const Fee = require("../models/Fee");
-const Student = require("../models/user"); // role: student
-const FeeAssignment = require("../models/FeeAssignment"); // new model for assignments
-const verifyToken = require("../middleware/authMiddleware");
+const FeeAssignment = require("../models/FeeAssignment");
+const User = require("../models/user");
 
-// Get all assigned fees with student and fee details
+// ------------------ Create Fee ------------------
+router.post("/", verifyToken, verifyAdmin, async (req, res) => {
+    try {
+        const { title, amount, description } = req.body;
+        if (!title || !amount) return res.status(400).json({ ok: false, message: "Title & amount required" });
+
+        const fee = new Fee({ title, amount, description });
+        await fee.save();
+        res.json({ ok: true, message: "Fee created successfully", fee });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ ok: false, message: "Failed to create fee" });
+    }
+});
+
+// ------------------ Get All Fees ------------------
+router.get("/", verifyToken, async (req, res) => {
+    try {
+        const fees = await Fee.find().lean();
+        res.json(Array.isArray(fees) ? fees : []);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ ok: false, message: "Failed to fetch fees" });
+    }
+});
+
+// ------------------ Assign Fee to Student ------------------
+router.post("/assign", verifyToken, verifyAdmin, async (req, res) => {
+    try {
+        const { studentId, feeId } = req.body;
+        if (!studentId || !feeId) return res.status(400).json({ ok: false, message: "Student & Fee required" });
+
+        const assignment = new FeeAssignment({
+            student: studentId,
+            fee: feeId,
+            status: "pending",
+        });
+
+        await assignment.save();
+        res.json({ ok: true, message: "Fee assigned successfully", assignment });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ ok: false, message: "Failed to assign fee" });
+    }
+});
+
+// ------------------ Get Assigned Fees ------------------
 router.get("/assigned", verifyToken, async (req, res) => {
     try {
         const assignments = await FeeAssignment.find()
-            .populate("student", "name email") // get student name & email
-            .populate("fee", "title amount description") // get fee details
+            .populate("student", "name email")
+            .populate("fee", "title amount description")
             .lean();
 
         res.json(Array.isArray(assignments) ? assignments : []);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Failed to fetch assignments" });
+        res.status(500).json({ ok: false, message: "Failed to fetch assignments" });
     }
 });
 
-// Assign a fee to a student
-router.post("/assign", verifyToken, async (req, res) => {
-    const { studentId, feeId } = req.body;
-
-    if (!studentId || !feeId) return res.status(400).json({ message: "Student & Fee required" });
-
-    try {
-        const existing = await FeeAssignment.findOne({ student: studentId, fee: feeId });
-        if (existing) return res.status(400).json({ message: "Fee already assigned to this student" });
-
-        const assignment = new FeeAssignment({
-            student: studentId,
-            fee: feeId,
-            status: "unpaid",
-        });
-
-        await assignment.save();
-        res.json({ ok: true, message: "Fee assigned successfully", data: assignment });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Failed to assign fee" });
-    }
-});
-
-// Mark fee as paid
-router.post("/pay/:id", verifyToken, async (req, res) => {
+// ------------------ Mark Fee as Paid ------------------
+router.post("/pay/:id", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const assignment = await FeeAssignment.findById(req.params.id);
-        if (!assignment) return res.status(404).json({ message: "Assignment not found" });
+        if (!assignment) return res.status(404).json({ ok: false, message: "Assignment not found" });
 
         assignment.status = "paid";
         await assignment.save();
-
         res.json({ ok: true, message: "Marked as paid" });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Failed to update status" });
+        res.status(500).json({ ok: false, message: "Failed to mark as paid" });
+    }
+});
+
+// ------------------ Delete Fee ------------------
+router.delete("/:id", verifyToken, verifyAdmin, async (req, res) => {
+    try {
+        await Fee.findByIdAndDelete(req.params.id);
+        res.json({ ok: true, message: "Fee deleted" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ ok: false, message: "Failed to delete fee" });
     }
 });
 

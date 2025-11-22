@@ -1,5 +1,5 @@
 const Fee = require("../models/Fee");
-const AssignedFee = require("../models/AssignedFee");
+const AssignedFee = require("../models/FeeAssignment");
 const User = require("../models/user");
 
 // Create fee
