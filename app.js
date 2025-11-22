@@ -41,26 +41,34 @@ const app = express();
 // ===========================
 const allowedOrigins = [
     "https://my-frontend-brown-eta.vercel.app",
-    // "http://localhost:3000" // optional for local dev
 ];
 
-// CORS Middleware
 app.use((req, res, next) => {
     const origin = req.headers.origin;
+
     if (allowedOrigins.includes(origin)) {
         res.setHeader("Access-Control-Allow-Origin", origin);
-        res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-        res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+        res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
         res.setHeader("Access-Control-Allow-Credentials", "true");
+        res.setHeader("Vary", "Origin");  // REQUIRED ⬅⬅⬅
     }
 
-    // Handle preflight
     if (req.method === "OPTIONS") {
         return res.sendStatus(204);
     }
+
     next();
 });
 
+
+
+
+
+app.use((req, res, next) => {
+    console.log("Incoming headers:", req.headers);
+    next();
+});
 
 // Allow your frontend domain
 // app.use(cors({
