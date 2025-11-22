@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const Fee = require("../models/Fee");
-const Student = require("../models/User"); // role: student
+const Student = require("../models/user"); // role: student
 const FeeAssignment = require("../models/FeeAssignment"); // new model for assignments
 const verifyToken = require("../middleware/authMiddleware");
 
