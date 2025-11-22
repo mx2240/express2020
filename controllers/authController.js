@@ -23,16 +23,17 @@ const signRefreshToken = (user) =>
 // =====================================================
 // ► REGISTER USER
 // =====================================================
+// controllers/authController.js
 const registerUser = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
         if (!name || !email || !password)
-            return res.status(400).json({ message: "All fields are required" });
+            return res.status(400).json({ ok: false, message: "All fields are required" });
 
         const exists = await User.findOne({ email });
         if (exists)
-            return res.status(400).json({ message: "Email already exists" });
+            return res.status(400).json({ ok: false, message: "Email already exists" });
 
         const hashed = await bcrypt.hash(password, 10);
 
@@ -41,23 +42,25 @@ const registerUser = async (req, res) => {
             email,
             password: hashed,
             role: role || "student",
-            isVerified: true, // skipping email verification for now
+            isVerified: true, // skip email verification for now
         });
 
-        res.status(201).json({
+        return res.status(201).json({
+            ok: true,
             message: "Registration successful",
-            user: {
+            body: {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
-            }
+                role: user.role,
+            },
         });
     } catch (err) {
-        console.log("REGISTER ERROR:", err);
-        res.status(500).json({ message: "Server error" });
+        console.error("REGISTER ERROR:", err);
+        return res.status(500).json({ ok: false, message: "Server error" });
     }
 };
+
 
 // =====================================================
 // ► LOGIN (WITH TOKEN)
