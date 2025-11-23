@@ -1,7 +1,9 @@
+// routes/adminStudentRoutes.js
 const express = require("express");
 const router = express.Router();
 const {
     listStudents,
+    listAllStudents,
     getStudent,
     createStudent,
     updateStudent,
@@ -9,28 +11,17 @@ const {
 } = require("../controllers/adminStudentController");
 
 const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
-const { validateStudent } = require("../middleware/validators");
 
-// Optional: we'll add validation middleware below; for now protect routes
+// Paginated
 router.get("/", verifyToken, verifyAdmin, listStudents);
+
+// Flat list for dropdowns
+router.get("/all", verifyToken, verifyAdmin, listAllStudents);
+
+// CRUD
 router.get("/:id", verifyToken, verifyAdmin, getStudent);
-router.post("/create", verifyToken, verifyAdmin, validateStudent, createStudent);
-router.put("/:id", verifyToken, verifyAdmin, validateStudent, updateStudent);
-
+router.post("/", verifyToken, verifyAdmin, createStudent);
+router.put("/:id", verifyToken, verifyAdmin, updateStudent);
 router.delete("/:id", verifyToken, verifyAdmin, deleteStudent);
-
-// routes/adminStudentRoutes.js
-router.get("/all", verifyToken, verifyAdmin, async (req, res) => {
-    try {
-        const students = await Student.find({}, "name email").sort({ name: 1 });
-        res.json(students); // returns array
-    } catch (err) {
-        console.error("listStudents all error:", err);
-        res.status(500).json({ message: "Failed to load students" });
-    }
-});
-
-
-
 
 module.exports = router;
