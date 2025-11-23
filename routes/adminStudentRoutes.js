@@ -25,3 +25,7 @@ router.put("/:id", verifyToken, verifyAdmin, updateStudent);
 router.delete("/:id", verifyToken, verifyAdmin, deleteStudent);
 
 module.exports = router;
+
+
+
+

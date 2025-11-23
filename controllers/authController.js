@@ -24,6 +24,9 @@ const signRefreshToken = (user) =>
 // ► REGISTER USER
 // =====================================================
 // controllers/authController.js
+// =====================================================
+// ► REGISTER USER
+// =====================================================
 const registerUser = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
@@ -45,10 +48,22 @@ const registerUser = async (req, res) => {
             isVerified: true, // skip email verification for now
         });
 
+        // Generate tokens
+        const token = signAccessToken(user);
+        const refreshToken = signRefreshToken(user);
+
+        await RefreshToken.create({
+            user: user._id,
+            token: refreshToken,
+            expiresAt: new Date(Date.now() + 7 * 86400000),
+        });
+
         return res.status(201).json({
             ok: true,
             message: "Registration successful",
-            body: {
+            token,
+            refreshToken,
+            user: {
                 id: user._id,
                 name: user.name,
                 email: user.email,
@@ -60,6 +75,7 @@ const registerUser = async (req, res) => {
         return res.status(500).json({ ok: false, message: "Server error" });
     }
 };
+
 
 
 // =====================================================
