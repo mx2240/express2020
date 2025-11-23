@@ -19,4 +19,18 @@ router.put("/:id", verifyToken, verifyAdmin, validateStudent, updateStudent);
 
 router.delete("/:id", verifyToken, verifyAdmin, deleteStudent);
 
+// routes/adminStudentRoutes.js
+router.get("/all", verifyToken, verifyAdmin, async (req, res) => {
+    try {
+        const students = await Student.find({}, "name email").sort({ name: 1 });
+        res.json(students); // returns array
+    } catch (err) {
+        console.error("listStudents all error:", err);
+        res.status(500).json({ message: "Failed to load students" });
+    }
+});
+
+
+
+
 module.exports = router;
