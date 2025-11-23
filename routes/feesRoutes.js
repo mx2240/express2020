@@ -1,27 +1,25 @@
 const express = require("express");
 const router = express.Router();
-const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
 const Fee = require("../models/Fee");
 const FeeAssignment = require("../models/FeeAssignment");
-const User = require("../models/user");
+const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
 
-// ------------------ Create Fee ------------------
+// -------------------- Create Fee (Admin) --------------------
 router.post("/", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const { title, amount, description } = req.body;
-        if (!title || !amount) return res.status(400).json({ ok: false, message: "Title & amount required" });
+        if (!title || !amount) return res.status(400).json({ ok: false, message: "Title & Amount required" });
 
-        const fee = new Fee({ title, amount, description });
-        await fee.save();
-        res.json({ ok: true, message: "Fee created successfully", fee });
+        const fee = await Fee.create({ title, amount, description });
+        res.json({ ok: true, fee });
     } catch (err) {
         console.error(err);
         res.status(500).json({ ok: false, message: "Failed to create fee" });
     }
 });
 
-// ------------------ Get All Fees ------------------
-router.get("/", verifyToken, async (req, res) => {
+// -------------------- Get All Fees --------------------
+router.get("/", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const fees = await Fee.find().lean();
         res.json(Array.isArray(fees) ? fees : []);
@@ -31,28 +29,27 @@ router.get("/", verifyToken, async (req, res) => {
     }
 });
 
-// ------------------ Assign Fee to Student ------------------
+// -------------------- Assign Fee to Student --------------------
 router.post("/assign", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const { studentId, feeId } = req.body;
         if (!studentId || !feeId) return res.status(400).json({ ok: false, message: "Student & Fee required" });
 
-        const assignment = new FeeAssignment({
+        const assignment = await FeeAssignment.create({
             student: studentId,
             fee: feeId,
             status: "pending",
         });
 
-        await assignment.save();
-        res.json({ ok: true, message: "Fee assigned successfully", assignment });
+        res.json({ ok: true, assignment });
     } catch (err) {
         console.error(err);
         res.status(500).json({ ok: false, message: "Failed to assign fee" });
     }
 });
 
-// ------------------ Get Assigned Fees ------------------
-router.get("/assigned", verifyToken, async (req, res) => {
+// -------------------- Get All Assigned Fees --------------------
+router.get("/assigned", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const assignments = await FeeAssignment.find()
             .populate("student", "name email")
@@ -66,7 +63,7 @@ router.get("/assigned", verifyToken, async (req, res) => {
     }
 });
 
-// ------------------ Mark Fee as Paid ------------------
+// -------------------- Mark Fee Paid --------------------
 router.post("/pay/:id", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const assignment = await FeeAssignment.findById(req.params.id);
@@ -74,14 +71,15 @@ router.post("/pay/:id", verifyToken, verifyAdmin, async (req, res) => {
 
         assignment.status = "paid";
         await assignment.save();
-        res.json({ ok: true, message: "Marked as paid" });
+
+        res.json({ ok: true, assignment });
     } catch (err) {
         console.error(err);
         res.status(500).json({ ok: false, message: "Failed to mark as paid" });
     }
 });
 
-// ------------------ Delete Fee ------------------
+// -------------------- Delete Fee --------------------
 router.delete("/:id", verifyToken, verifyAdmin, async (req, res) => {
     try {
         await Fee.findByIdAndDelete(req.params.id);

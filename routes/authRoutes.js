@@ -1,108 +1,48 @@
-// // const express = require("express");
-// // const router = express.Router();
-// // const { registerUser, loginUser } = require("../controllers/authController");
-
-// // router.post("/register", registerUser);
-// // router.post("/login", loginUser);
-
-// // module.exports = router;
-
-// // const express = require("express");
-// // const router = express.Router();
-// // const authCtrl = require("../controllers/authController");
-// // const { verifyToken } = require("../middleware/authMiddleware");
-// // const { forgotPassword, resetPassword } = require("../controllers/authController");
-
-// // // registration & login
-// // router.post("/register", authCtrl.registerUser);
-// // router.post("/login", authCtrl.loginUser);
-
-// // // refresh, logout
-// // router.post("/refresh", authCtrl.refreshToken);
-// // router.post("/logout", authCtrl.logout);
-
-// // // email verify
-// // router.get("/verify-email", authCtrl.verifyEmail);
-
-// // // password reset
-// // router.post("/request-reset", authCtrl.requestPasswordReset);
-// // router.post("/reset-password", authCtrl.resetPassword);
-
-
-// // router.post("/forgot-password", forgotPassword);
-// // router.post("/reset-password/:token", resetPassword);
-
-// // module.exports = router;
-
-
-
-
-// const express = require("express");
-// const router = express.Router();
-// const authCtrl = require("../controllers/authController");
-// const { verifyToken } = require("../middleware/authMiddleware");
-
-// // ------------------------
-// // User Registration & Login
-// // ------------------------
-// router.post("/register", authCtrl.registerUser);
-// router.post("/login", authCtrl.loginUser);
-
-// // ------------------------
-// // Token Management
-// // ------------------------
-// router.post("/refresh", authCtrl.refreshToken);
-// router.post("/logout", authCtrl.logout);
-
-// // ------------------------
-// // Email Verification
-// // ------------------------
-// // router.get("/verify-email", authCtrl.verifyEmail);
-
-// // ------------------------
-// // Password Reset
-// // ------------------------
-// router.post("/request-reset", authCtrl.requestPasswordReset); // request email link
-// router.post("/reset-password", authCtrl.resetPassword); // reset using token
-
-// module.exports = router;
-
-
-
-
-// routes/authRoutes.js
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
-const {
-    registerUser,
-    loginUser,
-    refreshToken,
-    logout,
-    requestPasswordReset,
-    resetPassword,
-} = require("../controllers/authController");
+// REGISTER
+router.post("/register", async (req, res) => {
+    try {
+        const { name, email, password, role } = req.body;
 
-// ==============================
-// AUTH ROUTES
-// ==============================
+        if (!name || !email || !password) {
+            return res.status(400).json({ ok: false, message: "All fields are required" });
+        }
 
-// REGISTER USER
-router.post("/register", registerUser);
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ ok: false, message: "Email already registered" });
+        }
 
-// LOGIN USER
-router.post("/login", loginUser);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-// REFRESH ACCESS TOKEN
-router.post("/refresh-token", refreshToken);
+        const user = await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            role: role || "student", // default role student
+        });
 
-// LOGOUT USER
-router.post("/logout", logout);
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
 
-// REQUEST PASSWORD RESET EMAIL
-router.post("/forgot-password", requestPasswordReset);
-
-// RESET PASSWORD
-router.post("/reset-password/:token", resetPassword);
+        res.json({
+            ok: true,
+            message: "Registration successful",
+            user: { id: user._id, name: user.name, email: user.email, role: user.role },
+            token,
+        });
+    } catch (err) {
+        console.error("Registration error:", err);
+        res.status(500).json({ ok: false, message: "Server error" });
+    }
+});
 
 module.exports = router;
