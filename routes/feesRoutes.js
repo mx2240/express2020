@@ -49,7 +49,7 @@ router.post("/assigned", verifyToken, verifyAdmin, async (req, res) => {
 });
 
 // -------------------- Get All Assigned Fees --------------------
-router.get("/assigned", verifyToken, verifyAdmin, async (req, res) => {
+router.get("/assign", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const assignments = await FeeAssignment.find()
             .populate("student", "name email")
