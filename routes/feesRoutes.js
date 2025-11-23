@@ -30,7 +30,7 @@ router.get("/", verifyToken, verifyAdmin, async (req, res) => {
 });
 
 // -------------------- Assign Fee to Student --------------------
-router.post("/assigned", verifyToken, verifyAdmin, async (req, res) => {
+router.post("/assign", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const { studentId, feeId } = req.body;
         if (!studentId || !feeId) return res.status(400).json({ ok: false, message: "Student & Fee required" });
@@ -49,7 +49,7 @@ router.post("/assigned", verifyToken, verifyAdmin, async (req, res) => {
 });
 
 // -------------------- Get All Assigned Fees --------------------
-router.get("/assign", verifyToken, verifyAdmin, async (req, res) => {
+router.get("/assigned", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const assignments = await FeeAssignment.find()
             .populate("student", "name email")
