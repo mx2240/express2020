@@ -53,11 +53,11 @@ app.use(cors({
 
 
 
-app.use((req, res, next) => {
-    console.log("token:", localStorage.getItem("token"));
+// app.use((req, res, next) => {
+//     console.log("token:", localStorage.getItem("token"));
 
-    next();
-});
+//     next();
+// });
 
 
 
