@@ -15,7 +15,7 @@ const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
 // Paginated
 router.get("/", verifyToken, verifyAdmin, listStudents);
 
-// Flat list for dropdowns
+// Flat list for dropdownss
 router.get("/all", verifyToken, verifyAdmin, listAllStudents);
 
 // CRUD

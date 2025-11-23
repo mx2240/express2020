@@ -42,18 +42,32 @@ exports.getStudent = async (req, res) => {
     }
 };
 
+// Create Student
 exports.createStudent = async (req, res) => {
     try {
-        const { name, email, studentClass, phone } = req.body;
+        const { name, email, studentClass, phone, user } = req.body;
+
+        // Check if email already exists
         const existing = await Student.findOne({ email });
         if (existing) return res.status(400).json({ message: "Email already taken" });
-        const student = await Student.create({ name, email, studentClass, phone });
+
+        // Create student (user field optional)
+        const student = await Student.create({ name, email, studentClass, phone, user });
+
         res.status(201).json({ message: "Student created", student });
     } catch (err) {
         console.error("createStudent error:", err);
+
+        // Handle duplicate user error gracefully
+        if (err.code === 11000 && err.keyPattern && err.keyPattern.user) {
+            return res.status(400).json({ message: "This user is already linked to a student" });
+        }
+
         res.status(500).json({ message: "Server error", error: err.message });
     }
 };
+
+
 
 exports.updateStudent = async (req, res) => {
     try {
