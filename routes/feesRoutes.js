@@ -30,7 +30,7 @@ router.get("/", verifyToken, verifyAdmin, async (req, res) => {
 });
 
 // -------------------- Assign Fee to Student --------------------
-router.post("/assign", verifyToken, verifyAdmin, async (req, res) => {
+router.post("/assigned", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const { studentId, feeId } = req.body;
         if (!studentId || !feeId) return res.status(400).json({ ok: false, message: "Student & Fee required" });
