@@ -83,29 +83,36 @@ exports.getStudent = async (req, res) => {
 // Create student
 // POST /api/admin/students
 // -------------------------
-exports.createStudent = async (req, res) => {
+xports.createStudent = async (req, res) => {
     try {
         const { name, email, password, studentClass, phone } = req.body;
 
-        // Check if a user already exists
+        // Find or create User
         let user = await User.findOne({ email });
         if (!user) {
             const hashedPassword = await bcrypt.hash(password || "123456", 10);
             user = await User.create({ name, email, password: hashedPassword, role: "student" });
         }
 
-        // Check if student already linked to this user
-        const existingStudent = await Student.findOne({ user: user._id });
-        if (existingStudent)
-            return res.status(400).json({ ok: false, message: "Student already linked to this user" });
+        // Check if student already linked
+        let student = await Student.findOne({ user: user._id });
+        if (student) {
+            return res.status(200).json({
+                ok: true,
+                message: "Student already exists",
+                student,
+            });
+        }
 
-        const student = await Student.create({ user: user._id, studentClass, phone, name, email });
+        // Create new student
+        student = await Student.create({ user: user._id, studentClass, phone, name, email });
         res.status(201).json({ ok: true, message: "Student created", student });
     } catch (err) {
         console.error("createStudent error:", err);
         res.status(500).json({ ok: false, message: "Server error", error: err.message });
     }
 };
+
 
 // -------------------------
 // Update student
@@ -158,3 +165,9 @@ exports.deleteStudent = async (req, res) => {
         res.status(500).json({ ok: false, message: "Server error", error: err.message });
     }
 };
+
+
+
+
+
+
