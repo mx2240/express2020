@@ -1,9 +1,14 @@
+// app.js
 const express = require("express");
 const dotenv = require("dotenv");
-const connectDB = require("./config/db");
 const serverless = require("serverless-http");
+const connectDB = require("./config/db");
 
-// Routes
+// Load env variables
+dotenv.config();
+connectDB();
+
+// Import routes
 const enrollmentRoutes = require("./routes/enrollmentRoutes");
 const courseRoutes = require("./routes/coursesRoutes");
 const studentRoutes = require("./routes/studentsRoutes");
@@ -28,24 +33,19 @@ const adminProfileRoutes = require("./routes/adminProfileRoutes");
 const adminStudentRoutes = require("./routes/adminStudentRoutes");
 const gradeRoutes = require("./routes/gradeRoutes");
 
-dotenv.config();
-connectDB();
-
+// Init Express
 const app = express();
 
 // ===========================
 // Middleware
 // ===========================
-const cors = require("cors");
 app.use(express.json());
-app.use(
-    cors({
-        origin: "https://my-frontend-brown-eta.vercel.app",
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-    })
-);
+app.use(require("cors")({
+    origin: "*", // Or your frontend URL
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 // ===========================
 // API Routes
@@ -74,21 +74,16 @@ app.use("/api/fees", feesRoutes);
 app.use("/api/grades", gradeRoutes);
 app.use("/api/auth", authRoutes);
 
-// ===========================
 // Root
-// ===========================
 app.get("/", (req, res) => {
-    res.send("✅ School API is running...");
+    res.json({ message: "✅ School API running on Vercel Serverless!" });
 });
 
-// ===========================
-// Serverless Export
-// ===========================
-module.exports.handler = serverless(app);
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error("🔥 SERVER ERROR:", err);
+    res.status(500).json({ message: "Internal server error", error: err.message });
+});
 
-// Optional: local dev server
-// if (require.main === module) {
-//     const PORT = process.env.PORT || 5000;
-//     app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
-// }
-// // 
+// Export app for serverless
+module.exports = serverless(app);

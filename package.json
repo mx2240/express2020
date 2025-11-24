@@ -1,7 +1,7 @@
 {
   "name": "express-app",
   "version": "1.0.0",
-  "main": "api/app.js",
+  "main": "app.js",
   "scripts": {
     "dev-local": "vercel dev",
     "abass": "node app.js",
@@ -24,7 +24,7 @@
     "nodemailer": "^7.0.10",
     "path": "^0.12.7",
     "serverless-http": "^3.2.0",
-    "vercel": "^44.7.3"
+    "vercel": "^48.10.10"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
