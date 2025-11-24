@@ -5,7 +5,7 @@
   "scripts": {
     "dev-local": "vercel dev",
     "abass": "node app.js",
-    "vercel-build": "echo Backend build"
+    "start": "node app.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
