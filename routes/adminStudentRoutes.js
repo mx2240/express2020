@@ -16,7 +16,7 @@ const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
 router.get("/", verifyToken, verifyAdmin, listStudents);
 
 // Flat list for dropdownss
-router.get("/all", verifyToken, verifyAdmin, listAllStudents);
+router.get("/all", verifyAdmin, listAllStudents);
 
 // CRUD
 router.get("/:id", verifyToken, verifyAdmin, getStudent);
