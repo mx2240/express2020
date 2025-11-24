@@ -76,7 +76,7 @@ app.use("/api/auth", authRoutes);
 
 // Root
 app.get("/", (req, res) => {
-    res.json({ message: "✅ School API running on Vercel Serverless!" });
+    res.json({ message: "✅ School API running successfully" });
 });
 
 // Global error handler
@@ -86,4 +86,4 @@ app.use((err, req, res, next) => {
 });
 
 // Export app for serverless
-module.exports = serverless(app);
+module.exports = app;
