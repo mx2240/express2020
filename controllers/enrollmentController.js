@@ -1,108 +1,50 @@
 const Enrollment = require("../models/Enrollment");
+const Student = require("../models/Student");
+const Course = require("../models/Course");
 
-// Enroll a student in a course
-const enrollStudent = async (req, res) => {
+// Admin enroll a student into a course
+exports.adminEnroll = async (req, res) => {
     try {
         const { studentId, courseId } = req.body;
 
         if (!studentId || !courseId) {
-            return res.status(400).json({ message: "Student ID and Course ID are required" });
+            return res.status(400).json({ ok: false, message: "Student and Course are required" });
         }
 
-        const enrollment = await Enrollment.create({
-            student: studentId,
-            course: courseId,
-        });
+        // Check if student exists
+        const student = await Student.findById(studentId);
+        if (!student) return res.status(404).json({ ok: false, message: "Student not found" });
 
-        res.status(201).json(enrollment);
-    } catch (error) {
-        if (error.code === 11000) {
-            return res.status(400).json({ message: "Student already enrolled in this course" });
-        }
-        res.status(500).json({ message: error.message });
+        // Check if course exists
+        const course = await Course.findById(courseId);
+        if (!course) return res.status(404).json({ ok: false, message: "Course not found" });
+
+        // Prevent duplicate enrollment
+        const exists = await Enrollment.findOne({ student: studentId, course: courseId });
+        if (exists) return res.status(400).json({ ok: false, message: "Student already enrolled in this course" });
+
+        // Create enrollment
+        const enrollment = await Enrollment.create({ student: studentId, course: courseId });
+
+        res.status(201).json({ ok: true, message: "Enrollment successful", enrollment });
+    } catch (err) {
+        console.error("adminEnroll error:", err);
+        res.status(500).json({ ok: false, message: "Server error", error: err.message });
     }
 };
 
-// Get all enrollments
-const getAllEnrollments = async (req, res) => {
+// List all enrollments for admin
+exports.getAllEnrollments = async (req, res) => {
     try {
         const enrollments = await Enrollment.find()
-            .populate("student")
-            .populate("course");
-        res.json(enrollments);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+            .populate("student", "name email")
+            .populate("course", "title code")
+            .sort({ createdAt: -1 })
+            .lean();
+
+        res.json({ ok: true, enrollments });
+    } catch (err) {
+        console.error("getAllEnrollments error:", err);
+        res.status(500).json({ ok: false, message: "Server error", error: err.message });
     }
-};
-
-// Get enrollment by ID
-const getEnrollmentById = async (req, res) => {
-    try {
-        const enrollment = await Enrollment.findById(req.params.id)
-            .populate("student")
-            .populate("course");
-
-        if (!enrollment) {
-            return res.status(404).json({ message: "Enrollment not found" });
-        }
-
-        res.json(enrollment);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-// Update enrollment
-const updateEnrollment = async (req, res) => {
-    try {
-        const enrollment = await Enrollment.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true }
-        );
-
-        if (!enrollment) {
-            return res.status(404).json({ message: "Enrollment not found" });
-        }
-
-        res.json(enrollment);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-// Delete enrollment
-const deleteEnrollment = async (req, res) => {
-    try {
-        const enrollment = await Enrollment.findByIdAndDelete(req.params.id);
-
-        if (!enrollment) {
-            return res.status(404).json({ message: "Enrollment not found" });
-        }
-
-        res.json({ message: "Enrollment deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-// Get enrollments for logged-in student
-const getMyEnrollments = async (req, res) => {
-    try {
-        const enrollments = await Enrollment.find({ student: req.user.id })
-            .populate("course");
-
-        res.json(enrollments);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-module.exports = {
-    enrollStudent,
-    getAllEnrollments,
-    getEnrollmentById,
-    updateEnrollment,
-    deleteEnrollment,
-    getMyEnrollments,
 };
