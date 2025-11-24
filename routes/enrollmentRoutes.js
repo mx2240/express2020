@@ -1,34 +1,45 @@
-// // routes/enrollmentRoutes.js
-// const express = require("express");
-// const router = express.Router();
-// const {
-//     enrollStudent,
-//     dropCourse,
-//     getMyCourses,
-//     getAllEnrollments,
-//     adminEnroll
-// } = require("../controllers/enrollmentController");
-
-// const { verifyToken, verifyStudent, verifyAdmin } = require("../middleware/authMiddleware");
-
-// // Student endpoints
-// router.post("/enroll/:courseId", verifyToken, verifyStudent, enrollStudent);
-// router.post("/drop/:courseId", verifyToken, verifyStudent, dropCourse);
-// router.get("/my-courses", verifyToken, verifyStudent, getMyCourses);
-
-// // Admin endpoints
-// router.get("/", verifyToken, verifyAdmin, getAllEnrollments);
-// router.post("/admin/enroll", verifyToken, verifyAdmin, adminEnroll);
-
-// module.exports = router;
-
-
-
+// routes/enrollmentRoutes.js
 const express = require("express");
 const router = express.Router();
-const { enrollStudent } = require("../controllers/enrollmentController");
-const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
 
-router.post("/", verifyToken, verifyAdmin, enrollStudent);
+const {
+    enrollStudent,
+    getAllEnrollments,
+    getEnrollmentById,
+    updateEnrollment,
+    deleteEnrollment,
+    getMyEnrollments,
+} = require("../controllers/enrollmentController");
+
+const {
+    verifyToken,
+    verifyAdmin,
+} = require("../middleware/authMiddleware");
+
+// =========================
+// ⭐ STUDENT ROUTES
+// =========================
+
+// Student enrolls in a course
+router.post("/enroll", verifyToken, enrollStudent);
+
+// Student views own enrollments
+router.get("/my-enrollments", verifyToken, getMyEnrollments);
+
+// =========================
+// ⭐ ADMIN ROUTES
+// =========================
+
+// Get all enrollments
+router.get("/", verifyToken, verifyAdmin, getAllEnrollments);
+
+// Get a specific enrollment
+router.get("/:id", verifyToken, verifyAdmin, getEnrollmentById);
+
+// Update an enrollment
+router.put("/:id", verifyToken, verifyAdmin, updateEnrollment);
+
+// Delete an enrollment
+router.delete("/:id", verifyToken, verifyAdmin, deleteEnrollment);
+
 module.exports = router;
-
