@@ -135,13 +135,13 @@ app.get("/", (req, res) => {
 
 
 // Global Error Handler
-app.use((err, req, res, next) => {
-    console.error("🔥 SERVER ERROR:", err);
-    res.status(500).json({
-        message: "Internal server error",
-        error: err.message
-    });
-});
+// app.use((err, req, res, next) => {
+//     console.error("🔥 SERVER ERROR:", err);
+//     res.status(500).json({
+//         message: "Internal server error",
+//         error: err.message
+//     });
+// });
 
 
 
