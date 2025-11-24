@@ -83,7 +83,7 @@ exports.getStudent = async (req, res) => {
 // Create student
 // POST /api/admin/students
 // -------------------------
-xports.createStudent = async (req, res) => {
+exports.createStudent = async (req, res) => {
     try {
         const { name, email, password, studentClass, phone } = req.body;
 
