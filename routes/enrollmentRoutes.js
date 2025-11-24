@@ -14,6 +14,7 @@ const {
 const {
     verifyToken,
     verifyAdmin,
+    verifyStudent
 } = require("../middleware/authMiddleware");
 
 // =========================
@@ -24,7 +25,7 @@ const {
 router.post("/enroll", verifyToken, enrollStudent);
 
 // Student views own enrollments
-router.get("/my-enrollments", verifyToken, getMyEnrollments);
+router.get("/my-enrollments", verifyToken, verifyStudent, getMyEnrollments);
 
 // =========================
 // ⭐ ADMIN ROUTES
